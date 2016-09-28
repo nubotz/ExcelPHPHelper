@@ -16,8 +16,8 @@ class ExcelHelper{
 	//constructor
 	function __construct($titleName, $defaultSheetName="WorkSheet"){
 		$this->objPHPExcel = new PHPExcel();
-		$this->objPHPExcel->getProperties()->setCreator("Rhoba")
-				 	->setLastModifiedBy("Rhoba")
+		$this->objPHPExcel->getProperties()->setCreator("Owner")
+				 	->setLastModifiedBy("Owner")
 				 	->setTitle($titleName)
 				 	->setSubject($titleName);
 		$this->objPHPExcel->setActiveSheetIndex(0);
