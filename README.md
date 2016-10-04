@@ -25,7 +25,7 @@ $sheet1->nextRow()->nextRow(); //move the pointer to next 2 row with column 0
 
 $sheet1->setBgColor(null,"yellow");
 
-$sheet1->setBgColor()->setTextColor(null,"dark_grey");
+$sheet1->setBgColor()->setTextColor(null,"dark_grey")->write("Amount:");
 
 $sheet1->setAlign("A1","right");
 
