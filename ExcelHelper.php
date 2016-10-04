@@ -65,13 +65,9 @@ class SheetHelper{
 	}
 
 	public function setHeader($headerArr=array()){
-		$col = 0;
-		$row = 1;
-		foreach($headerArr as $header){
-			$this->mySheet->setCellValueExplicitByColumnAndRow($col, $row, $header, TYPE_STR);
-			//set bold for title
-			$this->mySheet->getStyleByColumnAndRow($col, $row)->getFont()->setBold(true);
-			$col++;
+		foreach($headerArr as $value){
+			$this->setBold("");
+			$this->write($value);
 		}
 		$this->nextRow();
 	}
@@ -87,6 +83,7 @@ class SheetHelper{
 		foreach($array as $value){
 			$this->write($value);
 		}
+		$this->nextRow();
 	}
 	//write specific cell with third arg the cell location
 	//without moving the pointer
@@ -96,23 +93,55 @@ class SheetHelper{
 	public function jumpWrite($col=0, $row=0, $value="", $type=TYPE_STR){
 		$this->mySheet->setCellValueExplicitByColumnAndRow($col, $row, $value, $type);
 	}
-	public function setAlign($coord="A1",$alignment="right"){
+	public function setAlign($coord=null,$alignment="right"){
 		$align_map=array(
 			"right"=>PHPExcel_Style_Alignment::HORIZONTAL_RIGHT,
 			"left"=>PHPExcel_Style_Alignment::HORIZONTAL_LEFT,
 			"center"=>PHPExcel_Style_Alignment::HORIZONTAL_CENTER
 			);
-		$this->mySheet->getStyle($coord)->getAlignment()->setHorizontal($align_map[$alignment]);
+		if($coord == null){
+			$this->getStyle()->getAlignment()->setHorizontal($align_map[$alignment]);
+		}else{
+			$this->mySheet->getStyle($coord)->getAlignment()->setHorizontal($align_map[$alignment]);
+		}
+	}
+	public function setBold($coord=null){
+		$style;
+		if($coord == null){
+			$pointer = $this->myPointer;
+			$style = $this->mySheet->getStyleByColumnAndRow($pointer["col"],$pointer["row"]);
+		}else{
+			$style = $this->mySheet->getStyle($coord);
+		}
+		$style->getFont()->setBold(true);
+		return $this;
+	}
+	public function setBorder($coord=null){
+		$styleArray =          array(
+             'allborders' => array(
+                 'style' => PHPExcel_Style_Border::BORDER_THIN
+             )
+         );
+		$style;
+		if($coord == null){
+			$pointer = $this->myPointer;
+			$style = $this->mySheet->getStyleByColumnAndRow($pointer["col"],$pointer["row"]);
+		}else{
+			$style = $this->mySheet->getStyle($coord);
+		}
+		$style->getBorders()->applyFromArray($styleArray);
+		return $this;
 	}
 	//if first parameter is empty string, then just use current cell
-	public function setBgColor($coord="",$color="pink"){
+	public function setBgColor($coord=null,$color="pink"){
 		$rgb_map = array(
 			"pink"=>"F28A8C",
 			"black"=>"000000",
 			"white"=>"FFFFFFFF",
 			"yellow"=>"FFFF00",
 			"blue"=>"3399FF",
-			"grey"=>"A9A9A9"
+			"grey"=>"A9A9A9",
+			"dark_grey"=>"464646"
 			);
 		$myBgColorStyle = array(
 						'fill' => array(
@@ -120,22 +149,24 @@ class SheetHelper{
 							'color' => array('rgb' => $rgb_map[$color])
 						));
 		$style;
-		if($coord == ""){
+		if($coord == null){
 			$pointer = $this->myPointer;
 			$style = $this->mySheet->getStyleByColumnAndRow($pointer["col"],$pointer["row"]);
 		}else{
 			$style = $this->mySheet->getStyle($coord);
 		}
 		$style->applyFromArray($myBgColorStyle);
+		return $this;
 	}
-	public function setTextColor($coord="",$color="grey"){
+	public function setTextColor($coord=null,$color="grey"){
 		$rgb_map = array(
 			"pink"=>"F28A8C",
 			"black"=>"000000",
 			"white"=>"FFFFFFFF",
 			"yellow"=>"FFFF00",
 			"blue"=>"3399FF",
-			"grey"=>"A9A9A9"
+			"grey"=>"A9A9A9",
+			"dark_grey"=>"464646"
 			);
 		$styleArray = array(
 						'font' => array(
@@ -148,13 +179,14 @@ class SheetHelper{
 						// 	'size'=>15,
 						// 	'name'=>'Verdana')
 		$style;
-		if($coord == ""){
+		if($coord == null){
 			$pointer = $this->myPointer;
 			$style = $this->mySheet->getStyleByColumnAndRow($pointer["col"],$pointer["row"]);
 		}else{
 			$style = $this->mySheet->getStyle($coord);
 		}
 		$style->applyFromArray($styleArray);
+		return $this;
 	}
 	//set format code for the current cell
 	public function setFormat($format, $formatCode=null){
@@ -171,9 +203,11 @@ class SheetHelper{
 		}else{
 			$style->getNumberFormat()->setFormatCode($formatCode);
 		}
+		return $this;
 	}
 	public function setColumnWidth($column="A", $width=15){
 		$this->mySheet->getColumnDimension($column)->setWidth($width);
+		return $this;
 	}
 	public function nextRow(){
 		$pointer = $this->myPointer;
@@ -181,6 +215,7 @@ class SheetHelper{
 		$col = 0;
 		$row = $pointer["row"]+1 ;
 		$this->myPointer = array("col"=>$col,"row"=>$row);
+		return $this;
 	}
 	public function getCell(){
 		$pointer = $this->myPointer;
