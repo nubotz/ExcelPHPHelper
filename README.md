@@ -21,9 +21,11 @@ $sheet1->write("Hi there"); //default String type
 
 $sheet1->write(3, PHPExcel_Cell_DataType::TYPE_NUMERIC);
 
-$sheet1->nextRow(); //move the pointer to next row with column 0
+$sheet1->nextRow()->nextRow(); //move the pointer to next 2 row with column 0
 
-$sheet1->setBgColor("","yellow");
+$sheet1->setBgColor(null,"yellow");
+
+$sheet1->setBgColor()->setTextColor(null,"dark_grey");
 
 $sheet1->setAlign("A1","right");
 
