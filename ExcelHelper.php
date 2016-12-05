@@ -78,6 +78,7 @@ class SheetHelper{
 		$col = $pointer["col"]+1;
 		$row = $pointer["row"];
 		$this->myPointer = array("col"=>$col,"row"=>$row);
+		return $this;
 	}
 	public function writeArray($array=array()){
 		foreach($array as $value){
@@ -130,6 +131,10 @@ class SheetHelper{
 			$style = $this->mySheet->getStyle($coord);
 		}
 		$style->getBorders()->applyFromArray($styleArray);
+		return $this;
+	}
+	public function wrap(){
+		$this->getStyle()->getAlignment()->setWrapText(true);
 		return $this;
 	}
 	//if first parameter is empty string, then just use current cell
