@@ -18,8 +18,9 @@ $sheet1 = $excel->getSheetHelper("MyWorkSheetName");
 $sheet2 = $excel->newSheet("Sheet2Name");
 
 $sheet1->write("Hi there"); //default String type
-
 $sheet1->write(3, PHPExcel_Cell_DataType::TYPE_NUMERIC);
+
+$sheet1->wrap()->write("This is a very long string and the height of cell is wrapped")->wrap()->write("chain writing to next column cell");
 
 $sheet1->nextRow()->nextRow(); //move the pointer to next 2 row with column 0
 
